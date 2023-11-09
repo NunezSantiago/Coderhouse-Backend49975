@@ -28,8 +28,10 @@ class productManager{
         if(!existing){
             products.push(newProduct)
             await fs.promises.writeFile(this.path, JSON.stringify(products))
+            return true
         } else{
             console.log(`Already exisiting product with code  ${newProduct.code}`);
+            return false
         }
     }
 
@@ -44,47 +46,62 @@ class productManager{
         }
     }
 
-    async updateProduct(id, key, value){
+    async updateProduct(id, parameters){
         let products = await this.getProducts()
 
-        let i = products.findIndex((product) => product.id === id)
+        let i = products.findIndex((product) => product.id == id)
 
+        let keys = Object.keys(parameters)
+
+        let updateable = ['title', 'description', 'price', 'thumbnails', 'code', 'stock', 'category', 'status']
+        
         if(i != -1){
-
-            key = key.toLowerCase()
-
-            switch(key){
-                case 'title':
-                    products[i].title = value
-                break;
-                case 'description':
-                    products[i].description = value
-                break;
-                case 'price':
-                    products[i].price = value
-                break;
-                case 'thumbnail':
-                    products[i].thumbnail = value
-                break;
-                case 'code':
-                    let existing = products.some((product) => product.code == value)
-                    if(!existing){
-                        products[i].code = value
-                    } else{
-                        console.log(`Already exisiting product with code  ${newProduct.code}`);
+        for(let key of keys){
+            
+                key = key.toLowerCase()
+                let availableKey = updateable.includes(key)
+                if(availableKey){
+                    switch(key){
+                        case 'title':
+                            products[i].title = parameters[key]
+                        break;
+                        case 'description':
+                            products[i].description = parameters[key]
+                        break;
+                        case 'price':
+                            products[i].price = parameters[key]
+                        break;
+                        case 'thumbnail':
+                            products[i].thumbnail = parameters[key]
+                        break;
+                        case 'code':
+                            let existing = products.some((product) => product.code == parameters[key])
+                            if(!existing){
+                                products[i].code = parameters[key]
+                            } else{
+                                console.log(`Already exisiting product with code  ${parameters[key]}`);
+                            }
+                        break;
+                        case 'stock':
+                            products[i].stock = parameters[key]
+                        break;
+                        case 'category':
+                            products[i].category = parameters[key]
+                        break;
+                        case 'status':
+                            products[i].stock = parameters[key]
+                        break;
+                        default:
+                            console.log(`${parameters[key]} is not defined`)
                     }
-                break;
-                case 'stock':
-                    products[i].stock = value
-                break;
-                default:
-                    console.log(`${key} is not defined`)
-            }
-
-            await fs.promises.writeFile(this.path, JSON.stringify(products))
-        } else{
-            console.log(`Not found element with ID ${id}`)
+                } else{
+                    console.log(`The key: ${parameters[key]} cannot be updated`)
+                }
         }
+                await fs.promises.writeFile(this.path, JSON.stringify(products))
+            } else{ //if
+                console.log(`Not found element with ID ${id}`)
+            }
     }
 
     async deleteProduct(id){
