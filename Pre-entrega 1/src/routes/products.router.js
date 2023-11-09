@@ -97,11 +97,11 @@ router.post('/', async (req, res) => {
             let product = {
                 title: params.title,
                 description: params.description,
-                code: params.code,
                 price: params.price,
+                thumbnails: thumbnail,
+                code: params.code,
                 stock: params.stock,
                 category: params.category,
-                thumbnails: thumbnail,
                 status: status,
             }
 
