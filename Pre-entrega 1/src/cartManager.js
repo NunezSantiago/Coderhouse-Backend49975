@@ -1,6 +1,6 @@
 const fs = require('fs')
 const productManager = require("./productManager")
-let pm = new productManager("../files/productos.json")
+let pm = new productManager("./files/productos.json")
 
 class cartManager{
 
@@ -22,7 +22,7 @@ class cartManager{
 
         let cart = carts.find((cart) => cart.id === cartID)
 
-        if(!existing){
+        if(!cart){
             console.log(`Not found cart with ID ${cartID}`)
         }else{
             return cart
@@ -37,12 +37,12 @@ class cartManager{
         let cart = {id: id, products:[]}
 
         for(let product of products){
-            let elem = await pm.getProductByID(product.id)
+            let elem = await pm.getProductByID(product)
             if(elem){
-                cart.products.push({product: product.id, quantity:1})
+                cart.products.push({product: product, quantity:1})
             }
             else{
-                console.log(`Product with id ${product.id} not found, therefore, not adding to cart`)
+                console.log(`Product with id ${product} not found, therefore, not adding to cart`)
             }
         }
         carts.push(cart)
@@ -55,6 +55,7 @@ class cartManager{
         let indexOfCart = carts.findIndex((c) => c.id === cid)
 
         let existing = await pm.getProductByID(pid)
+        
         if(existing){
             if(indexOfCart != -1){
                 let indexOfProduct = carts[indexOfCart].products.findIndex((prod) => prod.product == pid)
@@ -64,12 +65,15 @@ class cartManager{
                     carts[indexOfCart].products.push({product:pid, quantity:1})
                 }
                 await fs.promises.writeFile(this.path, JSON.stringify(carts))
+                return true
             }
             else{
                 console.log(`Cart with id ${cid} does not exist`)
+                return {error: `Cart with id ${cid} does not exist`}
             }
         } else{
             console.log(`Product with id ${pid} does not exist`)
+            return {error: `Product with id ${pid} does not exist`}
         }
     }
 

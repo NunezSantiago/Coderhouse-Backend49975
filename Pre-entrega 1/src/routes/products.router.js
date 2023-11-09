@@ -13,14 +13,14 @@ router.get('/', async (req, res) => {
     let limit = req.query.limit
 
     if(limit == '' || limit == undefined || limit >= products.length){
-        res.json({Productos:products})
+        res.status(404).json({Productos:products})
     } else if(isNaN(limit)){
-        res.json({error: `Limit is not a number`})
+        res.status(404).json({error: `Limit is not a number`})
     } else if(parseInt(limit) < 0){
-        res.json({error: `Limit cannot be negative`})
+        res.status(404).json({error: `Limit cannot be negative`})
     }
     else{
-        res.json({Productos:products.slice(0, parseInt(limit))})
+        res.status(200).json({Productos:products.slice(0, parseInt(limit))})
     }
 })
 
@@ -31,18 +31,18 @@ router.get('/:pid', async (req, res) => {
     let id = req.params.pid
     
     if(id == '' || id == undefined){
-        throw new Error(`Please, specify a product`)
+        res.status(404).json({error: 'Please, specify a product'})
     } else if(isNaN(id)){
-        res.json({error: `ID is not a number`})
+        res.status(404).json({error: `ID is not a number`})
     } else if(parseInt(id) < 0){
-        res.json({error: `ID cannot be negative`})
+        res.status(404).json({error: `ID cannot be negative`})
     }
     else{
         let product = await pm.getProductByID(parseInt(id))
         if(product){
-            res.send(product)
+            res.status(200).send(product)
         } else{
-            res.json({error: `Product with id ${id} not found`})
+            res.status(404).json({error: `Product with id ${id} not found`})
         }
     }
 
