@@ -10,8 +10,8 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
-app.get("/", (req, res) => { //Homepage
-    res.setHeader("Content-Type", "text/plain"); //Seteamos el header
+app.get("/", (req, res) => {
+    res.setHeader("Content-Type", "text/plain");
     res.status(200).send('OK');
     
   });
