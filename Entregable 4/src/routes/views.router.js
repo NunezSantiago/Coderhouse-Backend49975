@@ -9,10 +9,10 @@ export const router = Router()
 router.get('/', async (req, res) => {
     let products = await pm.getProducts()
 
-    res.status(200).render('home',{products, title:'Productos'})
+    res.status(200).render('home',{products, title:'Productos con handlebars'})
 })
 
 router.get('/realTimeProducts', async (req, res) => {
-
-    
+    let products = await pm.getProducts()
+    res.status(200).render('realTimeProducts',{products, title:'Productos con websocket'})
 })

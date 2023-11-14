@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { io } from './app.js'
 
 //Definicion de productManager
 
@@ -28,6 +29,7 @@ class productManager{
         if(!existing){
             products.push(newProduct)
             await fs.promises.writeFile(this.path, JSON.stringify(products))
+            io.emit("new-product", {message: "New product has been added", products: products})
             return true
         } else{
             console.log(`Already exisiting product with code  ${newProduct.code}`);
