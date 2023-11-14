@@ -1,10 +1,11 @@
-const Router = require('express').Router
-const ProductManager = require("../productManager");
+import { Router } from 'express';
+import productManager from '../productManager.js'
+import __dirname from '../utils.js';
 
-const router = Router()
-const pm = new ProductManager("./files/productos.json");
+const routerProducts = Router()
+const pm = new productManager(__dirname + "/files/productos.json");
 
-router.get('/', async (req, res) => {
+routerProducts.get('/', async (req, res) => {
 
     res.setHeader("Content-Type", "application/json");
         
@@ -24,7 +25,7 @@ router.get('/', async (req, res) => {
     }
 })
 
-router.get('/:pid', async (req, res) => {
+routerProducts.get('/:pid', async (req, res) => {
 
     res.setHeader("Content-Type", "application/json");
 
@@ -48,7 +49,7 @@ router.get('/:pid', async (req, res) => {
 
 })
 
-router.delete('/:pid', async (req, res) => {
+routerProducts.delete('/:pid', async (req, res) => {
 
     res.setHeader("Content-Type", "application/json");
 
@@ -72,7 +73,7 @@ router.delete('/:pid', async (req, res) => {
     }
 })
 
-router.post('/', async (req, res) => {
+routerProducts.post('/', async (req, res) => {
 
     res.setHeader("Content-Type", "application/json");
 
@@ -117,7 +118,7 @@ router.post('/', async (req, res) => {
     }
 })
 
-router.put('/:pid', async (req, res) => {
+routerProducts.put('/:pid', async (req, res) => {
     res.setHeader("Content-Type", "application/json");
 
     let id = req.params.pid
@@ -137,4 +138,4 @@ router.put('/:pid', async (req, res) => {
     }
 })
 
-module.exports = router
+export default routerProducts
