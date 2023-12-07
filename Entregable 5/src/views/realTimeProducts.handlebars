@@ -1,0 +1,13 @@
+<h1>Productos con WebSocket</h1>
+
+<div id="productos">
+    {{#each products}}
+        <h3>{{this.title}}</h3>
+        <p>{{this.description}}</p>
+        <p>U$S{{this.price}}</p>
+        <hr>
+    {{/each}}
+</div>
+
+<script src="socket.io/socket.io.js"></script>
+<script src="js/productHandler.js"></script>
