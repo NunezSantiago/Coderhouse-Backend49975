@@ -7,6 +7,8 @@ import routerCarts from './routes/carts.router.js'
 import {Server} from 'socket.io'
 import mongoose from 'mongoose'
 
+import { messagesModel } from './models/messages.model.js';
+
 const PORT = 8080
 const app = express()
 
@@ -31,6 +33,20 @@ export const io = new Server(server)
 
 io.on("connection", socket=>{
   console.log('Cliente conectado')
+
+  socket.on('id', name=>{
+    socket.broadcast.emit("newUser:" + name)
+  })
+
+  socket.on('message', async data => {
+    try {
+      await messagesModel.create(data)
+    } catch (error) {
+      console.log(error.message)
+    }
+
+    io.emit('newMessage', data)
+  })
 })
 
 try {

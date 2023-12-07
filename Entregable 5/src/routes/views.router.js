@@ -25,3 +25,7 @@ router.get('/carts', async (req, res) => {
     console.log(carts)
     res.status(200).render('carts',{carts, title:'Carrito con websocket'})
 })
+
+router.get('/chat', async (req, res) => {
+    res.status(200).render('chat')
+})
