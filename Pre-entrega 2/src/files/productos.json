@@ -1,0 +1,10 @@
+[
+    {"title":"Producto prueba 3","description":"Esto es otro producto prueba 3","price":400,"thumbnails":[],"code":"abc3","stock":50,"id":3, "isDeleted": false, "category": "test 3", "status": true},
+    {"title":"Producto prueba 4","description":"Esto es otro producto prueba 4","price":800,"thumbnails":[],"code":"abc4","stock":50,"id":4, "status": true, "isDeleted": false, "category": "test 4"},
+    {"title":"Producto prueba 5","description":"Esto es otro producto prueba 5","price":1600,"thumbnails":[],"code":"abc5","stock":50,"id":5, "status": true, "isDeleted": false, "category": "test 5"},
+    {"title":"Producto prueba 6","description":"Esto es otro producto prueba 6","price":3200,"thumbnails":[],"code":"abc6","stock":50,"id":6, "status": true, "isDeleted": false, "category": "test 6"},
+    {"title":"Producto prueba 7","description":"Esto es otro producto prueba 7","price":6400,"thumbnails":[],"code":"abc7","stock":50,"id":7, "status": false, "isDeleted": false, "category": "test 7"},
+    {"title":"Producto prueba 8","description":"Esto es otro producto prueba 8","price":12800,"thumbnails":[],"code":"abc8","stock":50,"id":8, "status": false, "isDeleted": false, "category": "test 8"},
+    {"title":"Producto prueba 9","description":"Esto es otro producto prueba 9","price":25600,"thumbnails":[],"code":"abc9","stock":50,"id":9, "status": false, "isDeleted": false, "category": "test 9"},
+    {"title":"Producto prueba 10","description":"Esto es otro producto prueba 10","price":51200,"thumbnails":[],"code":"abc10","stock":50,"id":10, "status": false, "isDeleted": false, "category": "test 10"}
+]

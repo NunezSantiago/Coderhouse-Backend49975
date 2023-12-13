@@ -1,0 +1,26 @@
+<h1>Productos con WebSocket</h1>
+
+<div id="productos">
+    {{#each products}}
+        {{#with this}}
+        <a href="/product/{{id}}"><h3>{{this.title}}</h3></a>
+        {{/with}}
+        <p>{{this.description}}</p>
+        <p>U$S{{this.price}}</p>
+
+        <button type="button">Add to cart</button>
+
+        <hr>
+    {{/each}}
+</div>
+
+<div>
+    <a href="/products/?page=1">Page 1 | </a>
+    {{#if hasPrevPage}}<a href="/products/?page={{prevPage}}">< Previous Page | </a>{{/if}}
+    
+    {{#if hasNextPage}}<a href="/products/?page={{nextPage}}">Next Page > | </a>{{/if}}
+    <a href="/products/?page={{totalPages}}">Last page</a>
+</div>
+
+<script src="socket.io/socket.io.js"></script>
+<script src="js/productHandler.js"></script>

@@ -1,0 +1,12 @@
+<h1>Carritos con WebSocket</h1>
+
+<div id="carritos">
+    {{#each carts}}
+        <div id="{{this.id}}">
+            <h3>Cart ID: {{this.id}}</h3>
+            <p>{{this.products}}</p>
+            <hr>
+        </div>
+    {{/each}}
+</div>
+
