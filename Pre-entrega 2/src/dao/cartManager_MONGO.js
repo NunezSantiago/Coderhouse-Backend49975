@@ -5,8 +5,9 @@ import productManager from "./productManager_MONGO.js";
 /*
 To do:
 
-get cid pid => Removes product from cart | done 12-Dec
-get cid pid and quantity => Add certain quantity to that product in cart - Can modify addProductToCart | done 12-Dec
+delete get cid => Removes all products from cart | done 12-Dec
+delete get cid pid => Removes product from cart | done 12-Dec
+post get cid pid and quantity => Add certain quantity to that product in cart - Can modify addProductToCart | done 12-Dec
 
 */
 
@@ -108,7 +109,22 @@ class cartManager{
 
     }
 
-    async removeFromCart(cid, pid){
+    async removeProductsFromCart(cid){
+        let cart = await this.getCartByID(cid)
+
+        if(cart && !cart.status){
+            try {
+                await cartsModel.updateOne({id: cid, isDeleted: false}, {products: []})
+                return true
+            } catch (error) {
+                return {error: 'Error inesperado', message: error.message}
+            }
+        } else{
+            return {status: 'failed', message: `Could not find cart with ID ${cid}`}
+        }
+    }
+
+    async removeProductFromCart(cid, pid){
 
         let cart = await this.getCartByID(cid)
 
