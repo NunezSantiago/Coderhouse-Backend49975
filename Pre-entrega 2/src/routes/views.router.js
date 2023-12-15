@@ -23,24 +23,35 @@ router.get('/products', async (req, res) => {
 
     //console.log( totalPages, hasPrevPage, hasNextPage, prevPage, nextPage )
 
-    res.status(200).render('products',{products: products.docs, totalPages, hasPrevPage, hasNextPage, prevPage, nextPage, title:'Productos'})
+    res.status(200).render('products',{products: products.docs, totalPages, hasPrevPage, hasNextPage, prevPage, nextPage, limit, title:'Productos'})
 })
 
 router.get("/product/:pid", async (req, res) => {
 
     let id = req.params.pid
-
+    
     let product = await pm.getProductByObjectID(id)
-
-    console.log(product)
-
+    
+    //console.log(product)
+    
     res.status(200).render('product', {product, title: product.title})
+})
+
+router.get('/cart/:cid', async (req, res) => {
+    
+    let id = req.params.cid
+
+    let cart = await cm.getCartByID(parseInt(id))
+
+    console.log(cart.products)
+
+    res.status(200).render('cart', {products: cart.products, title: `Cart ${cart.id}`})
 })
 
 router.get('/carts', async (req, res) => {
     let carts = await cm.getCarts()
     //console.log(carts)
-    res.status(200).render('carts',{carts, title:'Carrito con websocket'})
+    res.status(200).render('carts',{carts, title:'Carrito'})
 })
 
 router.get('/chat', async (req, res) => {

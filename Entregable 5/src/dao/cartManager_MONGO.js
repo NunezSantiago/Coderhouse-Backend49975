@@ -10,7 +10,7 @@ class cartManager{
         let carts = []
 
         try {
-            carts = cartsModel.find({isDeleted : false})
+            carts = await cartsModel.find({isDeleted : false}).lean()
         } catch (error) {
             console.log(error.message)
         }

@@ -31,7 +31,7 @@ class cartManager{
         let cart
 
         try {
-            cart = await cartsModel.findOne({id: cid, isDeleted: false})
+            cart = await cartsModel.findOne({id: cid, isDeleted: false}).populate('products.product').lean()
         } catch (error) {
             return {status: 'failed', error: error.message}
         }
@@ -81,10 +81,10 @@ class cartManager{
         let cart = await this.getCartByID(cid)
 
         if(cart && !cart.status){
-            let prod = await pm.getProductByID(pid)
+            let prod = await pm.getProductByObjectID(pid)
 
             if(prod && !prod.error){
-                let indexOfProd = cart.products.findIndex((p) => p.product.toString() == prod._id.toString())
+                let indexOfProd = cart.products.findIndex((p) => p.product._id.toString() == prod._id.toString())
 
                 if(indexOfProd !== -1){
                     cart.products[indexOfProd].quantity+=quantity
@@ -106,6 +106,49 @@ class cartManager{
         } else{
             return {status: 'failed', message: `Could not find cart with ID ${cid}`}
         }
+    }
+
+    async addProductsToCart(cid, products){
+
+        let cart = await this.getCartByID(cid)
+
+        //console.log(products)
+
+        if(cart && !cart.status){
+
+            let productsInCart = []
+
+            let ids = products.map(prod => prod.product) // Array of IDs of passed products
+
+            let availableProducts = []
+
+            try {
+                availableProducts = (await productsModel.find({_id: {'$in': ids}, isDeleted: false}, '_id')).map(prod => prod._id.toString()) // Interseccion entre array de IDs y productos en DB
+            } catch (error) {
+                console.log(error.message)
+            }
+
+            productsInCart = products.filter(prod => availableProducts.includes(prod.product))
+
+            if(productsInCart.length === 0) {
+                return {status: 'failed', message:`Products could not be found in the database`}
+            } else{
+                try {
+                    await cartsModel.updateOne({id: cid, isDeleted: false}, {products: productsInCart})
+                } catch (error) {
+                    console.log(error.message)
+                }
+
+                if(productsInCart.length !== ids.length){
+                    return {status: 'success', message:`Partial success: ${productsInCart.length} of ${ids.length} products were successfully added to cart with ID ${cid}`}
+                } else {
+                    return {status: 'success', message:`${productsInCart.length} products were successfully added to cart with ID ${cid}`}
+                }
+            }
+
+            
+
+        }
 
     }
 
@@ -120,7 +163,7 @@ class cartManager{
                 return {error: 'Error inesperado', message: error.message}
             }
         } else{
-            return {status: 'failed', message: `Could not find cart with ID ${cid}`}
+            return {status: 'failed', error: `Could not find cart with ID ${cid}`}
         }
     }
 
@@ -133,9 +176,9 @@ class cartManager{
 
             if(prod && !prod.error){
 
-                let filteredProducts = cart.products.filter(p => p.product.toString() !== prod._id.toString())
+                let filteredProducts = cart.products.filter(p => p.product._id.toString() !== prod._id.toString())
 
-                console.log(filteredProducts)
+                //console.log(filteredProducts)
 
                 if(filteredProducts.length == cart.products.length){
                     return {status: 'failed', error: "Product not in cart"}
@@ -144,7 +187,7 @@ class cartManager{
                         await cartsModel.updateOne({id: cid, isDeleted: false}, {products: filteredProducts})
                         return true
                     } catch (error) {
-                        return {error: 'Error inesperado', message: error.message}
+                        return {status: 'failed', message: error.message}
                     }
                 }                
 

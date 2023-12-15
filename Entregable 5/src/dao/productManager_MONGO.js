@@ -7,7 +7,7 @@ class productManager{
 		let products = []
 			
 		try {
-			products = await productsModel.find({isDeleted: false})
+			products = await productsModel.find({isDeleted: false}).lean()
 		} catch (error) {
 			console.log(error.message)
 		}

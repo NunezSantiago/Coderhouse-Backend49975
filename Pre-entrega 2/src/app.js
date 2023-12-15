@@ -27,13 +27,14 @@ app.use('/api/carts', routerCarts) // Ruta productos localhost:8080/api/products
 
 const server = app.listen(PORT, async ()=>{
     console.log('Server is online')
+    //console.log(__dirname)
 })
 
 export const io = new Server(server)
 
 io.on("connection", socket=>{
   console.log('Cliente conectado')
-
+  
   socket.on('id', name=>{
     socket.broadcast.emit("newUser:" + name)
   })

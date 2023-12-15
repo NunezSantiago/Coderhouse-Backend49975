@@ -2,13 +2,6 @@ import { Router } from 'express';
 import cartManager from '../dao/cartManager_MONGO.js';
 //import { router } from './views.router.js';
 
-/*
-To do
-
-res.status in delete operations
-one put operation
-put operation receives from query instead of body
-*/
 
 const routerCarts = Router()
 const cm = new cartManager();
@@ -110,7 +103,67 @@ routerCarts.put('/:cid/product/:pid', async (req, res) => {
     let cartId = req.params.cid
     let productId = req.params.pid
 
-    let {quantity} = req.query
+    let { quantity } = req.query
+
+    console.log(req.body)
+
+    if(cartId == '' || cartId == undefined){
+        res.status(404).json({error: 'Please, specify a cart'})
+    } else if(productId == '' || productId == undefined){
+        res.status(404).json({error: 'Please, specify a product'})
+    } else if(isNaN(cartId)){
+        res.status(404).json({error: `IDs are not a number. Please, make sure to enter the information in the correct format`})
+    } else if(parseInt(cartId) < 0 || parseInt(productId) < 0 ){
+        res.status(404).json({error: `ID cannot be negative. Please, make sure to enter non negative values`})
+    } else{
+        let result = await cm.addProductToCart(parseInt(cartId), productId, quantity ? parseInt(quantity) : 1)
+        
+        if(result === true){
+            res.status(200).json({status:'Success', message:`Product with ID ${productId} has been successfully added to cart with ID ${cartId}`})
+        } else{
+            console.log('aca')
+            res.status(404).json(result)
+        }
+    }
+})
+
+routerCarts.put('/:cid', async(req, res) => {
+    
+    res.setHeader("Content-Type", "application/json");
+
+    let cartId = req.params.cid
+
+    let {products} = req.query
+
+    //{"product": "65750b4d7020a299c05601a4", "quantity": 1}, {"product": "6570faae77121b537f08e412", "quantity": 2}, {"product": "6570faae77121b537f08e678", "quantity": 3}
+
+    //let result = await cm.addProductsToCart(parseInt(cartId), JSON.parse(`[{"product": "6570faae77121b537f08e678", "quantity": 3}]`))
+
+    if(cartId == '' || cartId == undefined){
+        res.status(404).json({error: 'Please, specify a cart'})
+    } else if(isNaN(cartId)){
+        res.status(404).json({error: `ID is not a number. Please, make sure to enter the information in the correct format`})
+    } else if(parseInt(cartId) < 0){
+        res.status(404).json({error: `ID cannot be negative. Please, make sure to enter non negative values`})
+    } else{
+
+        let result = await cm.addProductsToCart(parseInt(cartId), JSON.parse(products))
+
+        if(result.status === 'success'){
+            res.status(200).json(result)
+        } else{
+            res.status(404).json(result)
+        }
+    }
+})
+
+//res.status
+routerCarts.delete('/:cid/product/:pid', async (req, res) => {
+
+    res.setHeader("Content-Type", "application/json");
+
+    let cartId = req.params.cid
+    let productId = req.params.pid
 
     if(cartId == '' || cartId == undefined){
         res.status(404).json({error: 'Please, specify a cart'})
@@ -121,25 +174,16 @@ routerCarts.put('/:cid/product/:pid', async (req, res) => {
     } else if(parseInt(cartId) < 0 || parseInt(productId) < 0 ){
         res.status(404).json({error: `ID cannot be negative. Please, make sure to enter non negative values`})
     } else{
-        let result = await cm.addProductToCart(parseInt(cartId), parseInt(productId), quantity ? parseInt(quantity) : 1)
+
+        let result = await cm.removeProductFromCart(parseInt(cartId), parseInt(productId))
+
         if(result === true){
-            res.status(200).json({status:'Success', message:`Product with ID ${productId} has been successfully added to cart with ID ${cartId}`})
+            res.status(200).json({status:'Success', message:`Product with ID ${productId} has been successfully removed ftom cart with ID ${cartId}`})
         } else{
-            res.status(404).json({error: result.error})
+            res.status(404).json(result)
         }
     }
-})
-
-//res.status
-routerCarts.delete('/:cid/product/:pid', async (req, res) => {
-    res.setHeader("Content-Type", "application/json");
-
-    let cartId = req.params.cid
-    let productId = req.params.pid
-
-    let result = await cm.removeProductFromCart(parseInt(cartId), parseInt(productId))
-
-    console.log(result)
+    //console.log(result)
 
 })
 
@@ -147,12 +191,23 @@ routerCarts.delete('/:cid/', async (req, res) => {
     res.setHeader("Content-Type", "application/json");
 
     let cartId = req.params.cid
-    //let productId = req.params.pid
 
-    let result = await cm.removeProductsFromCart(parseInt(cartId))
+    if(cartId == '' || cartId == undefined){
+        res.status(404).json({error: 'Please, specify a cart'})
+    } else if(isNaN(cartId)){
+        res.status(404).json({error: `ID is not a number. Please, make sure to enter the information in the correct format`})
+    } else if(parseInt(cartId) < 0){
+        res.status(404).json({error: `ID cannot be negative. Please, make sure to enter non negative values`})
+    } else{
 
-    console.log(result)
+        let result = await cm.removeProductsFromCart(parseInt(cartId))
 
+        if(result === true){
+            res.status(200).json({status:'Success', message:`All products has been removed from cart with ID ${cartId}`})
+        } else{
+            res.status(404).json(result)
+        }
+    }
 })
 
 
