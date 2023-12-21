@@ -15,8 +15,8 @@ router.post('/login', async (req, res) => {
     if(email === "adminCoder@coder.com"){
         if(password === 'adminCod3r123'){
             req.session.user = {
-                username: user.username,
-                email: user.email,
+                username: 'Admin Coder',
+                email: 'adminCoder@coder.com',
                 role: 'Admin'
             }
             return res.redirect('/products')
