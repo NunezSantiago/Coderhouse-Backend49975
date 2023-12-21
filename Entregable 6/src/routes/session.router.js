@@ -12,6 +12,19 @@ router.post('/login', async (req, res) => {
         return res.redirect('/login?error=Please, complete all fields')
     }
 
+    if(email === "adminCoder@coder.com"){
+        if(password === 'adminCod3r123'){
+            req.session.user = {
+                username: user.username,
+                email: user.email,
+                role: 'Admin'
+            }
+            return res.redirect('/products')
+        } else{
+            return res.redirect('/login?error=Invalid credentials')
+        }
+    }
+
     password = crypto.createHmac("sha256", "CoderCoder").update(password).digest("hex")
 
     let user = await usersModel.findOne({email, password})
@@ -26,7 +39,7 @@ router.post('/login', async (req, res) => {
         role: user.role
     }
 
-    res.redirect('/products')
+    return res.redirect('/products')
 })
 
 router.post('/logon', async (req, res) => {
