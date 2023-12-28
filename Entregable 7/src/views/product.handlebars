@@ -1,0 +1,15 @@
+<input type="number" id="cartID">
+
+{{#with product}}
+<h1>{{title}}</h1>
+<p>{{description}}</p>
+<p>Price: ${{price}}</p>
+<p>Stock: {{stock}}</p>
+<p>Category: {{category}}</p>
+{{/with}}
+
+<button type="button" class="addToCart" onclick="addToCart('{{id}}')">Add to cart</button>
+<br>
+<a href="/products">All products</a>
+
+<script src="js/productHandler.js"></script>

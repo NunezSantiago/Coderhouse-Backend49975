@@ -1,0 +1,15 @@
+<h2>Registro</h2>
+
+
+<form action="/api/session/logon" method="post">
+
+    {{#if error}}
+    <div style="color: red">{{error}}</div>
+    {{/if}}
+
+    <input type="text" name="name" placeholder="username">
+    <input type="text" name="email" placeholder="email">
+    <input type="password" name="password" placeholder="password">
+
+    <input type="submit" value="Register">
+</form>
