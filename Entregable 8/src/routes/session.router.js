@@ -16,8 +16,10 @@ router.get('errorLogin', (req, res) => {
 router.post('/login', passport.authenticate('login', {failureRedirect: '/api/session/errorLogin'}), async (req, res) => {
 
     req.session.user = {
-        name: req.user.name,
+        first_name: req.user.first_name,
+        last_name: req.user.last_name,
         email: req.user.email,
+        age: req.user.age,
         role: req.user.role
     }
 
