@@ -58,7 +58,7 @@ export const passportInit = () => {
                 let newUser
 
                 try {
-                    newUser = await usersModel.create({first_name, last_name, email, age, role, cart: cid})
+                    newUser = await usersModel.create({first_name, last_name, email, age, role, cart: cid, password})
                     return done(null, newUser)
                 } catch (error) {
                     
