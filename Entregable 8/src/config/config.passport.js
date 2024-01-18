@@ -47,14 +47,18 @@ export const passportInit = () => {
 
                 let cm = new cartManager()
 
-                let cartID = cm.addCart([])._id
+                let cartID = await cm.addCart([])
 
-                console.log(cartID)
+                cartID = await cartsModel.findOne({id: cartID})
+
+                let cid = cartID._id
+
+                console.log(cid)
 
                 let newUser
 
                 try {
-                    newUser = await usersModel.create({first_name, last_name, email, age, role, cart: cartID})
+                    newUser = await usersModel.create({first_name, last_name, email, age, role, cart: cid})
                     return done(null, newUser)
                 } catch (error) {
                     

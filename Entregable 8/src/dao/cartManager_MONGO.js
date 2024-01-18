@@ -69,7 +69,7 @@ class cartManager{
         
         try {
             await cartsModel.create({id: id, products: productsInCart})
-            return true
+            return id
         } catch (error) {
             return {error: 'Error inesperado', message: error.message}
         }
