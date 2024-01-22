@@ -2,14 +2,18 @@ const socket = io()
 
 async function addToCart(pid){
     
-    let cartID = document.getElementById('cartID').value
+    //let cartID = document.getElementById('cartID').value
+    
+    let cartID = session.user.cart
 
-    let URL = `/api/carts/${cartID}/product/${pid}`
+    console.log(cartID)
+    
+    // let URL = `/api/carts/${cartID}/product/${pid}`
     
 
-    fetch(URL, {
-        method: 'PUT'
-    })
+    // fetch(URL, {
+    //     method: 'PUT'
+    // })
 
 
 }

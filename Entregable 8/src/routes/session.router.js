@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { usersModel } from "../models/users.model.js";
+//import { usersModel } from "../models/users.model.js";
 //import crypto, { createHash } from 'crypto'
-import {createHash, validatePassword} from '../utils.js'
+//import {createHash, validatePassword} from '../utils.js'
 //import { passportInit } from './config/config.passport.js';
 import passport from 'passport';
-import { passportInit } from "../config/config.passport.js";
+
 
 export const router=Router()
 
@@ -20,7 +20,8 @@ router.post('/login', passport.authenticate('login', {failureRedirect: '/api/ses
         last_name: req.user.last_name,
         email: req.user.email,
         age: req.user.age,
-        role: req.user.role
+        role: req.user.role,
+        cart: req.user.cart
     }
 
     //console.log(req.session.user)
@@ -63,9 +64,12 @@ router.get('/logout', (req, res) => {
 })
 
 router.get('/current', async (req, res) => {
+
+    res.setHeader("Content-Type", "application/json");
+
     if(req.session.user){
-        return req.session.user
+        res.status(200).send(req.session.user)
     } else{
-        return "No active session available"
+        res.status(404).json({error: `No active session available`})
     }
 })
