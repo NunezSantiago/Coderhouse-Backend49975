@@ -12,9 +12,17 @@ export class usersMongoDAO{
         }
     }
 
-    async getBy(email){
+    async getByID(uid){
         try {
-            return await usersModel.findOne({email: email})
+            return await usersModel.findOne({ _id: uid, isDeleted: false})
+        } catch (error) {
+            
+        }
+    }
+
+    async getByEmail(email){
+        try {
+            return await usersModel.findOne({email: email, isDeleted: false})
         } catch (error) {
             return {error}
         }

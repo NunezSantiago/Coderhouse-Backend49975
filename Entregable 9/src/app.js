@@ -6,29 +6,20 @@ import express from 'express'
 import {engine} from 'express-handlebars'
 import sessions from 'express-session'
 
-//import {Server} from 'socket.io'
-
-// Routers
-// import routerProducts from './routes/products.router.js' //Router Productos
-// import {router as viewRouter} from './routes/views.router.js' // Router Views
-// import routerCarts from './routes/carts.router.js' // Router Carrito
-// import {router as sessionRouter} from './routes/session.router.js' // Router sesiones
-
 import { router as usersRouter } from './routes/users.router.js'
 import { router as productsRouter } from './routes/products.router.js';
 import { router as cartsRouter } from './routes/carts.router.js';
 import { router as viewsRouter } from './routes/views.router.js';
+import { router as sessionsRouter } from './routes/session.router.js';
 
 
 // Mongo
 import mongoose from 'mongoose' //mongoose
 import MongoStore from 'connect-mongo';
 
-//import { messagesModel } from './models/messages.model.js';
-
 //Passport
-// import { passportInit } from './config/config.passport.js';
-// import passport from 'passport';
+import { passportInit } from './config/config.passport.js';
+import passport from 'passport';
 
 const PORT = 8080
 const app = express()
@@ -60,13 +51,15 @@ app.use(sessions({
 app.use('/api/users', usersRouter)
 app.use('/api/products', productsRouter)
 app.use('/api/carts', cartsRouter)
+app.use('/api/carts', cartsRouter)
+app.use('/api/sessions', sessionsRouter)
 app.use('/', viewsRouter)
 
 // Passport configuration
 
-// passportInit()
-// app.use(passport.initialize())
-// app.use(passport.session())
+passportInit()
+app.use(passport.initialize())
+app.use(passport.session())
 
 // Server connection
 const server = app.listen(PORT, async ()=>{

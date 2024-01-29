@@ -13,6 +13,10 @@ class cartService{
         return await this.dao.getByID(cid)
     }
 
+    async getCartByCartID(cid){
+        return await this.dao.getByCartID(cid)
+    }
+
     async createCart(products){
         return await this.dao.create(products)
     }

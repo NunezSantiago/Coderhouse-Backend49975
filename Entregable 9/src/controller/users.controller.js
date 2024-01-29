@@ -1,4 +1,6 @@
 import { usersService } from "../services/user.service.js"
+import { cartsService } from "../services/carts.service.js"
+import { createHash } from "../utils.js"
 
 //usersService
 
@@ -14,8 +16,21 @@ export class usersController {
         if(users.error){
             return res.status(400).json({error: users.error.message})
         } else{
-            //console.log('test')
             return res.status(200).json(users)
+        }
+    }
+
+    static async getUserByEmail(req, res){
+        res.setHeader("Content-Type", "application/json")
+
+        let { email } = req.params
+
+        let users = await usersService.getUserByEmail(email)
+
+        if(users.error){
+            return res.status(400).json({error: users.error.message})
+        } else{
+            return res.status(200).json(user)
         }
     }
 
@@ -26,28 +41,37 @@ export class usersController {
         
         let { first_name, last_name, email, password, role } = req.body
         
-        if(!first_name || !last_name || !email || !password || !role){
+        if(!first_name || !last_name || !email || !password){
             return res.status(400).json({error: "Information missing"})
+        }
+
+        if(!role){
+            role = 'User'
         }
 
         // Email validation
 
         let exist = await usersService.getUserByEmail(email)
 
-        console.log(exist)
-
         if(exist){
             return res.status(400).json({error: `User with email ${email} already exists`})
         }
+
+        let cartID = await cartsService.createCart([])
+        let userCart = await cartsService.getCartByCartID(cartID)
+
+        password = createHash(password)
         
         // User creation
 
-        let newUser = usersService.createUser({ first_name, last_name, email, password, role })
+        let newUser = await usersService.createUser({ cart: userCart._id ,first_name, last_name, email, password, role })
 
+
+        //is payload necessary?
         if(newUser.error){
             return res.status(400).json({error: newUser.error.message})
         } else{
-            return res.status(200).send('User successfully created')
+            return res.status(200).send({payload: newUser, message:'User successfully created'})
         }
     }
 }

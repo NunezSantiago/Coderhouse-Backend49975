@@ -38,21 +38,24 @@ export class cartsController{
 
         let { products } = req.body
     
-        let availableProducts = await productsService.getAllProducts()
-        
-        if(availableProducts.error){
-            return res.status(400).json({error: availableProducts.error.message})
-        }
-
         let cart = []
         
-        let productsIds = availableProducts.map(product => product._id.toString())
+        if(products){
+            let availableProducts = await productsService.getAllProducts()
         
-        products.forEach( (product) => {
-            if(productsIds.includes(product)){
-                cart.push({product, quantity: 1})
+            if(availableProducts.error){
+                return res.status(400).json({error: availableProducts.error.message})
             }
-        })
+
+            
+            let productsIds = availableProducts.map(product => product._id.toString())
+            
+            products.forEach( (product) => {
+                if(productsIds.includes(product)){
+                    cart.push({product, quantity: 1})
+                }
+            })
+        }
 
         let newCart = await cartsService.createCart(cart)
 

@@ -75,15 +75,28 @@ export class viewsController{
         res.status(200).render('cart', {cart, title: `Cart ${cart._id}`})
     }
 
-    static async register(req, res){
+    static async login(req, res){
+        
+        let { error, message }  = req.query
+    
         res.setHeader('Content-Type', 'text/html')
+        res.status(200).render('login', {error, message})
     }
 
-    static async login(req, res){
+    static async register(req, res){
+        
+        let { error, message } = req.query 
+    
         res.setHeader('Content-Type', 'text/html')
+        res.status(200).render('register', {error})
     }
+
 
     static async profile(req, res){
+        
+        let user = req.session.user
+
         res.setHeader('Content-Type', 'text/html')
+        res.status(200).render('profile', {user})
     }
 }
