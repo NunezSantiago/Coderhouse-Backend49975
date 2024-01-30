@@ -16,12 +16,12 @@ const auth = (req, res, next) => {
 router.get('/', auth, viewsController.home)
 
 // Product views
-router.get('/products', viewsController.products)
-router.get('/product/:pid', viewsController.product)
+router.get('/products', auth, viewsController.products)
+router.get('/product/:pid', auth, viewsController.product)
 
 // Cart views
-router.get('/carts', viewsController.carts)
-router.get('/cart/:cid', viewsController.cart)
+router.get('/carts', auth, viewsController.carts)
+router.get('/cart/:cid', auth, viewsController.cart)
 
 // Session views 
 router.get('/login', viewsController.login)

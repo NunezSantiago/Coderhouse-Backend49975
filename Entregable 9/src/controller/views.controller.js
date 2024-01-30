@@ -38,11 +38,13 @@ export class viewsController{
 
         let { totalPages, hasPrevPage, hasNextPage, prevPage, nextPage } = products
 
+        let user = req.session.user
+
         //let user = req.session.user
 
         //console.log( totalPages, hasPrevPage, hasNextPage, prevPage, nextPage )
 
-        return res.status(200).render('products', {products: products.docs, totalPages, hasPrevPage, hasNextPage, prevPage, nextPage, limit, title:'Products'})
+        return res.status(200).render('products', {cartID: user.cart, products: products.docs, totalPages, hasPrevPage, hasNextPage, prevPage, nextPage, limit, title:'Products'})
         
     }
 
@@ -53,9 +55,11 @@ export class viewsController{
     
         let product = await productsService.getProductByID(id)
 
+        let user = req.session.user
+
         console.log(product)
 
-        return res.status(200).render('product', {product, title: product.title})
+        return res.status(200).render('product', {cartID: user.cart, product, title: product.title})
     }
 
     static async carts(req, res){
