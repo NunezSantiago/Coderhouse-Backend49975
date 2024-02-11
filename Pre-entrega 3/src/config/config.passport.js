@@ -27,7 +27,6 @@ export const passportInit = () => {
             let {first_name, last_name, age, email, role} = req.body
 
             if(!first_name || !last_name || !age || !email || !password){
-                console.log('error 1')
                 return done(null, false)
             }
 
@@ -39,19 +38,18 @@ export const passportInit = () => {
 
             if(exist){
                 console.log(exist)
-                console.log('error 2 - ', email)
                 return done(null, false)
             }
 
             password = createHash(password)
 
             let cartID = await cartsService.createCart([])
-            //let userCart = await cartsService.getCartByCartID(cartID)
+
+            //console.log(cartID)
             
-            let newUser = await usersService.createUser({ cart: cartID._id ,first_name, last_name, email, password, role })
+            let newUser = await usersService.createUser({ cart: cartID._id, age, first_name, last_name, email, password, role })
 
             if(newUser.error){
-                console.log('error 3', newUser.error)
                 return done(null, false)
             } else{
                 return done(null, newUser)
@@ -70,19 +68,16 @@ export const passportInit = () => {
         try{
 
             if(!username || !password){
-                //console.log('error 1')
                 return done(null, false)
             }
         
             let user = await usersService.getUserByEmail(username)
         
             if(!user){
-                //console.log('error 2')
                 return done(null, false)
             } 
             
             if(!validatePassword(user, password)){
-                //console.log('error 3')
                 return done(null, false)
             }
 
