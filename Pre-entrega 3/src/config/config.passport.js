@@ -2,7 +2,7 @@ import { createHash, validatePassword } from "../utils.js";
 
 import passport from "passport";
 import local from "passport-local"
-import github from "passport-github2"
+//import github from "passport-github2"
 
 import { usersService } from "../services/user.service.js";
 import { cartsService } from "../services/carts.service.js"
@@ -46,12 +46,12 @@ export const passportInit = () => {
             password = createHash(password)
 
             let cartID = await cartsService.createCart([])
-            let userCart = await cartsService.getCartByCartID(cartID)
+            //let userCart = await cartsService.getCartByCartID(cartID)
             
-            let newUser = await usersService.createUser({ cart: userCart._id ,first_name, last_name, email, password, role })
+            let newUser = await usersService.createUser({ cart: cartID._id ,first_name, last_name, email, password, role })
 
             if(newUser.error){
-                console.log('error 3')
+                console.log('error 3', newUser.error)
                 return done(null, false)
             } else{
                 return done(null, newUser)

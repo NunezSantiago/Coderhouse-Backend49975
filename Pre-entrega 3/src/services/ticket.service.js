@@ -1,4 +1,7 @@
-import { ticketsMongoDAO } from "../dao/ticketsMongoDAO.js";
+//import { ticketsMemoryDAO as ticketsDAO} from "../dao/ticketsMemoryDAO.js";
+//import { ticketsMongoDAO as ticketsDAO } from "../dao/ticketsMongoDAO.js";
+
+import { DAO } from "../dao/factory.js";
 
 class ticketService{
 
@@ -15,4 +18,4 @@ class ticketService{
     }
 }
 
-export const ticketsService = new ticketService(ticketsMongoDAO)
+export const ticketsService = new ticketService(DAO.ticketsDAO)

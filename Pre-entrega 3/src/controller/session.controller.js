@@ -1,3 +1,5 @@
+import { userReadDTO } from "../dto/usersDTO.js"
+
 export class sessionController{
     
     constructor(){}
@@ -16,6 +18,7 @@ export class sessionController{
             role: req.user.role,
             cart: req.user.cart
         }
+        
         return res.redirect('/products')
     }
 
@@ -42,7 +45,7 @@ export class sessionController{
         res.setHeader("Content-Type", "application/json");
     
         if(req.session.user){
-            res.status(200).send(req.session.user)
+            res.status(200).send(new userReadDTO(req.session.user))
         } else{
             res.status(404).json({error: `No active session available`})
         }

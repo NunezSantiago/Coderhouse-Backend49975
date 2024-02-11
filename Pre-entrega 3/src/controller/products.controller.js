@@ -138,7 +138,7 @@ export class productsController{
             if(Object.keys(params).length !== 0){
                 updatedProduct = await productsService.updateProduct(id, params)
 
-                console.log(params)
+                //console.log(params)
 
                 if(updatedProduct.error){
                     return res.status(400).json({error: newProduct.error.message})

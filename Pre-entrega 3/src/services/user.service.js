@@ -1,4 +1,6 @@
-import { usersMongoDAO } from "../dao/usersMongoDAO.js"
+// import { usersMongoDAO as usersDao } from "../dao/usersMongoDAO.js"
+// import { usersMemoryDAO as usersDao } from "../dao/usersMemoryDAO.js"
+import { DAO } from "../dao/factory.js";
 
 class userService{
 
@@ -21,9 +23,6 @@ class userService{
     async getUserByID(uid){
         return await this.dao.getByID(uid)
     }
-
-
-        
 }
 
-export const usersService = new userService(usersMongoDAO)
+export const usersService = new userService(DAO.usersDAO)

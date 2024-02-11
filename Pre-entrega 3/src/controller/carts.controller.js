@@ -22,15 +22,25 @@ export class cartsController{
     static async getCartByID(req, res){
         res.setHeader("Content-Type", "application/json");
 
-        let id = req.params.cid
+        let cartId = req.params.cid
 
-        let cart = await cartsService.getCartByID(id)
+        let cart = await cartsService.getCartByID(cartId)
 
-        if(cart.error){
-            return res.status(400).json({error: cart.error.message})
+        if(cart){
+            if(cart.error){
+                return res.status(400).json({error: cart.error.message})
+            } else{
+                return res.status(200).json(cart)
+            }
         } else{
-            return res.status(200).json(cart)
+            return res.status(400).json({error: `Could not find cart with ID ${cartId}`})
         }
+
+        // if(cart.error){
+        //     return res.status(400).json({error: cart.error.message})
+        // } else{
+        //     return res.status(200).json(cart)
+        // }
     }
 
     static async createCart(req, res){
@@ -75,8 +85,9 @@ export class cartsController{
         let productId = req.params.pid
 
         let quantity = (req.body.quantity && !isNaN(req.body.quantity)) ? req.body.quantity : 1
+        quantity = parseInt(quantity)
 
-        console.log(quantity)
+        //console.log(quantity)
 
         let existCart = await cartsService.getCartByID(cartId)
         let existProduct = await productsService.getProductByID(productId)
@@ -90,7 +101,7 @@ export class cartsController{
                 let productinCart = false
                 
                 for(let prod of cart){
-                    console.log(prod)
+                    //console.log(prod)
                     if(prod.product._id == productId){
                         prod.quantity+=quantity
                         productinCart = true
@@ -99,7 +110,11 @@ export class cartsController{
                 }
 
                 if(!productinCart){
-                    cart.push({product: productId, quantity})
+                    cart.push({product: {
+                        _id: existProduct._id,
+                        stock: existProduct.stock,
+                        price: existProduct.price
+                    }, quantity})
                 }
 
                 let updatedCart = await cartsService.updateCart(cartId, cart)
@@ -168,9 +183,6 @@ export class cartsController{
         let cart = await cartsService.getCartByID(cartId)
 
         if(cart){
-            //console.log(cart)
-            // console.log(cart.products)
-            // return res.status(200).json(cart)
 
             let amount = 0
             let available = [] // Keep a list of the available products, to update later
@@ -180,54 +192,54 @@ export class cartsController{
                 if(prod.quantity <= prod.product.stock){
                     available.push(prod)
                     amount+=(parseFloat(prod.product.price*prod.quantity))
-                    console.log(parseFloat(prod.product.price*prod.quantity))
                 } else {
                     unavailable.push(prod._id)
                 }
             })
 
-            let purchaser = cart._id
-            let purchase_datetime = new Date()
+            if(available.length > 0){
+                
+                let ticket
+                let purchaser = cart._id
+                let purchase_datetime = new Date()
 
-            // Random code generator
-            let code
-            let unique = false
-            let ticket
-            do{
-                code = (Math.random() + 1).toString(36).substring(2) + (Math.random() + 1).toString(36).substring(2);
-                ticket = await ticketsService.getTicketByCode(code) 
-                if(!ticket){
-                    unique = true
+                // Random code generator
+                let code
+                let unique = false
+
+                do{
+                    code = (Math.random() + 1).toString(36).substring(2) + (Math.random() + 1).toString(36).substring(2);
+                    ticket = await ticketsService.getTicketByCode(code) 
+                    if(!ticket){
+                        unique = true
+                    }
+                } while(!unique)
+
+                let result = await ticketsService.createTicket({code, purchase_datetime, amount, purchaser})
+
+                let newCart = cart
+
+                let availableIDs = available.map(avail => avail.product._id)
+
+                for(let i = newCart.products.length - 1; i >= 0; i--){
+                    if(availableIDs.includes(newCart.products[i].product._id)){
+                        newCart.products.splice(i, 1)
+                    }
                 }
-            } while(!unique)
 
-            let result = await ticketsService.createTicket({code, purchase_datetime, amount, purchaser})
+                console.log(newCart.products)
 
-            console.log(result)
+                let updateCart = await cartsService.updateCart(cartId, newCart.products)
+                
+                available.forEach(async prod => {
+                    //prod.product.stock-=prod.quantity
+                    await productsService.updateProduct(prod.product._id, {stock: prod.product.stock - prod.quantity})
+                })
 
-            // inserta un nuevo ticket
-
-            let newCart = cart
-
-            let availableIDs = available.map(avail => avail.product._id)
-
-            //console.log(availableIDs)
-
-            //console.log(newCart.products)
-            // Remove from cart products contained in one array
-            for(let i = newCart.products.length - 1; i >= 0; i--){
-                if(availableIDs.includes(newCart.products[i].product._id)){
-                    newCart.products.splice(i, 1)
-                }
+                res.status(200).json(result)
+            } else{
+                res.status(200).json("None of the selected products were available for purchase")
             }
-
-            //console.log(newCart.products)
-
-            let updateCart = await cartsService.updateCart(cartID, newCart)
-
-
-
-
 
         } else{
             return res.status(400).json({error: `Could not find cart with ID ${cartId}`})

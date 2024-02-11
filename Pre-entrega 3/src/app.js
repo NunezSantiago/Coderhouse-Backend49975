@@ -14,6 +14,8 @@ import { router as sessionsRouter } from './routes/session.router.js';
 
 import { config } from './config/config.js';
 
+//console.log(process.argv)
+
 
 // Mongo
 import mongoose from 'mongoose' //mongoose
@@ -66,12 +68,4 @@ app.use(passport.session())
 const server = app.listen(PORT, async ()=>{
     console.log('Server is online', config.PORT)
 })
-
-// Mongoose connection
-try {
-  await mongoose.connect(config.MONGO_URL, {dbName: config.DBNAME})
-  console.log('Successfully connnected to database!!')
-} catch (error) {
-  console.log(error.message)
-}
 

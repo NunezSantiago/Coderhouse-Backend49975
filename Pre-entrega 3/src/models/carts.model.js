@@ -4,10 +4,6 @@ const cartsCollectios = 'carts'
 
 const cartsSchema = new mongoose.Schema(
 	{
-		cartID:{
-			type: Number,
-			unique: true
-		},
 		products: {
 			type: [{
 				product: {

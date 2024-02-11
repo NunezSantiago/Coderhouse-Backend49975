@@ -1,4 +1,7 @@
-import { cartsMongoDAO } from "../dao/cartsMongoDAO.js";
+//import { cartsMongoDAO as cartsDAO} from "../dao/cartsMongoDAO.js";
+//import { cartsMemoryDAO as cartsDAO } from "../dao/cartsMemoryDAO.js";
+import { DAO } from "../dao/factory.js";
+
 
 class cartService{
     constructor(dao){
@@ -26,4 +29,4 @@ class cartService{
     }
 }
 
-export const cartsService = new cartService(cartsMongoDAO)
+export const cartsService = new cartService(DAO.cartsDAO)

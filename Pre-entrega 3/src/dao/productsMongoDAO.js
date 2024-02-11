@@ -1,6 +1,6 @@
 import { productsModel } from "../models/products.model.js";
 
-export class productosMongoDAO{
+export class productsMongoDAO{
 
     constructor(){}
 

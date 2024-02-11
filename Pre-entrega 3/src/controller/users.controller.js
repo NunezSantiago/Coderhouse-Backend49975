@@ -38,7 +38,6 @@ export class usersController {
 
         res.setHeader("Content-Type", "application/json")
         
-        
         let { first_name, last_name, email, password, role } = req.body
         
         if(!first_name || !last_name || !email || !password){
@@ -57,17 +56,16 @@ export class usersController {
             return res.status(400).json({error: `User with email ${email} already exists`})
         }
 
-        let cartID = await cartsService.createCart([])
-        let userCart = await cartsService.getCartByCartID(cartID)
+        let userCart = await cartsService.createCart([])
+
+        console.log(userCart)
 
         password = createHash(password)
-        
-        // User creation
 
-        let newUser = await usersService.createUser({ cart: userCart._id ,first_name, last_name, email, password, role })
+        let newUser = await usersService.createUser({ cart: userCart._id, first_name, last_name, email, password, role })
 
+        console.log(newUser)
 
-        //is payload necessary?
         if(newUser.error){
             return res.status(400).json({error: newUser.error.message})
         } else{

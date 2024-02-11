@@ -5,7 +5,10 @@
     <p>Stock: {{product.stock}}</p>
     <p>Category: {{product.category}}</p>
 
-    <form action="/api/carts/{{cartID}}/product/{{product._id}}" method="post">
+    <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
+
+    <form action="/api/carts/{{cartID}}/product/{{product._id}}" method="post" target="dummyframe">
+        <input type="number" placeholder="Quantity" name="quantity">
         <input type="submit" value="Add to cart">
     </form>
 </div>
