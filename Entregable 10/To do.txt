@@ -1,0 +1,15 @@
+Logica
+n Carrrito tiene n productos
+1 Usuario tiene 1 carrito
+
+Completed
+Modelos mongo
+
+To do
+
+Creacion de usuario - Carrito
+
+Variables de entorno
+Saque id manual de modelo -> Actualizar controladores para que tomen el id de mongo
+Reset database and insert new products
+Add to card logic

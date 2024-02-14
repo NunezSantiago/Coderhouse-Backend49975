@@ -1,0 +1,20 @@
+<div>
+    <h1>{{product.title}}</h1>
+    <p>{{product.description}}</p>
+    <p>Price: ${{product.price}}</p>
+    <p>Stock: {{product.stock}}</p>
+    <p>Category: {{product.category}}</p>
+
+    <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
+
+    <form action="/api/carts/{{cartID}}/product/{{product._id}}" method="post" target="dummyframe">
+        <input type="number" placeholder="Quantity" name="quantity">
+        <input type="submit" value="Add to cart">
+    </form>
+</div>
+
+
+<br>
+<a href="/products">All products</a>
+
+<script src="js/productHandler.js"></script>
