@@ -1,0 +1,20 @@
+<h2>Login</h2>
+
+<form action="/api/sessions/login" method="post">
+
+    {{#if message}}
+    <div style="color: green">{{message}}</div>
+    {{/if}}
+
+    {{#if error}}
+    <div style="color: red">{{error}}</div>
+    {{/if}}
+
+    <input type="text" name="email" placeholder="email">
+    <input type="password" name="password" placeholder="password">
+
+    <input type="submit" value="Login">
+
+    <br>
+
+</form>
