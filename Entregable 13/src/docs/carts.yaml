@@ -1,0 +1,80 @@
+paths:
+  /api/carts/:
+    get:
+      summary: Retrieves all carts.
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: All carts were retrieved successfully.
+        "500":
+          description: Internal server error. No carts were retrieved.
+  /api/carts/cid:
+    get:
+      summary: Retrieves cart with id cid.
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: Cart was retrieved successfully.
+        "404":
+          description: Cart with id cid does not exist.
+        "500":
+          description: Internal server error. No carts were retrieved.
+  /api/carts/{products}:
+    post:
+      summary: Creates a cart with the provided products.
+      tags:
+        - Carts
+      parameters:
+        - name: products
+          in: path
+          required: true
+          description: Products to be added to the new cart
+          schema:
+            type: Array
+      responses:
+        "201":
+          description: Cart created successfully.
+        "500":
+          description: Internal server error. Cart was not created.
+  /api/carts/cid/product/pid:
+    post:
+      summary: Add product with ID pid to cart with ID cid.
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: Products added successfully.
+        "403":
+          description: User is trying to add products to a different cart that their own.
+        "404":
+          description: Cart cannot be found.
+        "500":
+          description: Internal server error. Product could not be added.
+    delete:
+      summary: Removes product with id pid from cart cid.
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: Products removed successfully.
+        "404":
+          description: Cart cannot be found.
+        "500":
+          description: Internal server error. Product could not be removed.
+  /api/carts/cid/purchase:
+    post:
+      summary: Finalizes the purchase of cart with id cid.
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: All carts were retrieved successfully.
+        "403":
+          description: User is trying to finalize the purchase of a cart that is not its own.
+        "404":
+          description: Cart cannot be found.
+        "500":
+          description: Internal server error. Purchase could not be completed.
+  

@@ -1,0 +1,136 @@
+paths:
+  /api/products/:
+    get:
+      summary: Shows all products.
+      tags:
+        - Products
+      responses:
+        "200":
+          description: All products were retrieved successfully.
+        "403":
+          description: User is not an administrator or permium user.
+        "500":
+          description: Internal server error. No products were retrieved.
+  /api/products/{title, description, code, price, stock, thumbnails, status}:
+    post:
+      summary: Create one product.
+      parameters:
+        - name: title
+          in: path
+          required: true
+          description: Product name
+          schema:
+            type: string
+        - name: description
+          in: path
+          required: true
+          description: Product description
+          schema:
+            type: string
+        - name: code
+          in: path
+          required: true
+          description: Unique code for thr product
+          schema:
+            type: string
+        - name: price
+          in: path
+          required: true
+          description: Product product price
+          schema:
+            type: integer
+        - name: stock
+          in: path
+          required: true
+          description: Product stock
+          schema:
+            type: integer
+        - name: thumbnails
+          in: path
+          required: true
+          description: Array of paths to product thumbnails
+          schema:
+            type: string
+        - name: status
+          in: path
+          required: false
+          description: Product status
+          schema:
+            type: boolean  
+      tags:
+        - Products
+      responses:
+        "201": 
+          description: Product created successfully
+        "403":
+          description: User is not an administrator or permium user.
+        "500": 
+          description: Internal server error. Product could not be created.
+  /api/products/:cid/{title, description, code, price, stock, thumbnails, status}:
+    put:
+      summary: Update product with id cid.
+      parameters:
+        - name: title
+          in: path
+          required: false
+          description: Product name
+          schema:
+            type: string
+        - name: description
+          in: path
+          required: false
+          description: Product description
+          schema:
+            type: string
+        - name: code
+          in: path
+          required: false
+          description: Unique code for thr product
+          schema:
+            type: string
+        - name: price
+          in: path
+          required: false
+          description: Product product price
+          schema:
+            type: integer
+        - name: stock
+          in: path
+          required: false
+          description: Product stock
+          schema:
+            type: integer
+        - name: thumbnails
+          in: path
+          required: false
+          description: Array of paths to product thumbnails
+          schema:
+            type: string
+        - name: status
+          in: path
+          required: false
+          description: Product status
+          schema:
+            type: boolean  
+      tags:
+        - Products
+      responses:
+        "201": 
+          description: Product updated successfully
+        "403":
+          description: User is not an administrator or permium user.
+        "500": 
+          description: Internal server error. Product could not be created.
+  /api/products/:cid:
+    delete:
+      summary: Delete product with id cid
+      tags:
+        - Products
+      responses:
+        "201": 
+          description: Product created successfully
+        "403":
+          description: User is not an administrator or permium user.
+        "500": 
+          description: Internal server error. Product could not be created.
+
