@@ -28,12 +28,12 @@ export class cartsController{
 
         if(cart){
             if(cart.error){
-                return res.status(400).json({error: cart.error.message})
+                return res.status(500).json({error: cart.error.message})
             } else{
                 return res.status(200).json(cart)
             }
         } else{
-            return res.status(400).json({error: `Could not find cart with ID ${cartId}`})
+            return res.status(404).json({error: `Could not find cart with ID ${cartId}`})
         }
 
         // if(cart.error){
@@ -70,9 +70,9 @@ export class cartsController{
         let newCart = await cartsService.createCart(cart)
 
         if(newCart.error){
-            return res.status(400).json({error: newCart.error.message})
+            return res.status(500).json({error: newCart.error.message})
         } else{
-            res.status(200).json("Cart added successfully")
+            res.status(201).json("Cart added successfully")
         }
     }
 
@@ -131,10 +131,10 @@ export class cartsController{
                 }
 
             } else{
-                return res.status(400).json({error: `Could not find product with ID ${productId}`})
+                return res.status(404).json({error: `Could not find product with ID ${productId}`})
             }
         } else{
-            return res.status(400).json({error: `Could not find cart with ID ${cartId}`})
+            return res.status(404).json({error: `Could not find cart with ID ${cartId}`})
         }
 
     }
@@ -163,7 +163,7 @@ export class cartsController{
                     let updatedCart = cartsService.updateCart(cartId, newCart)
                     
                     if(updatedCart.error){
-                        return res.status(400).json({error: updatedCart.error.message})
+                        return res.status(500).json({error: updatedCart.error.message})
                     } else{
                         return res.status(200).json(`Successfully deleted product ${productId} to cart ${cartId}`)
                     }
@@ -171,10 +171,10 @@ export class cartsController{
                 }
 
             } else{
-                return res.status(400).json({error: `Could not find product with ID ${productId}`})
+                return res.status(404).json({error: `Could not find product with ID ${productId}`})
             }
         } else{
-            return res.status(400).json({error: `Could not find cart with ID ${cartId}`})
+            return res.status(404).json({error: `Could not find cart with ID ${cartId}`})
         }
 
     }
@@ -247,7 +247,7 @@ export class cartsController{
             }
 
         } else{
-            return res.status(400).json({error: `Could not find cart with ID ${cartId}`})
+            return res.status(404).json({error: `Could not find cart with ID ${cartId}`})
         }
     }
 }

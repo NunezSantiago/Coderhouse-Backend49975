@@ -14,7 +14,7 @@ const isAdmin = (req, res, next) => {
     next()
 }
 
-router.get('/', productsController.getProducts)
+router.get('/', isAdmin, productsController.getProducts)
 router.post('/', isAdmin, productsController.createProduct)
 router.put('/:pid', isAdmin, productsController.updateProduct)
 router.delete('/:pid', isAdmin, productsController.deleteProduct)

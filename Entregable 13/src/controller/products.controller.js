@@ -35,7 +35,7 @@ export class productsController{
         let products = await productsService.getProducts(conf, query)
 
         if(products.error){
-            let error = customError.customError("Database unexpected error", products.error.message, STATUS_CODES.ERROR_ARGUMENTOS, INTERNAL_CODES.DATABASE, "Database unexpected error, please, retry later")
+            let error = customError.customError("Database unexpected error", products.error.message, STATUS_CODES.SERVER_ERROR, INTERNAL_CODES.DATABASE, "Database unexpected error, please, retry later")
             req.logger.error(error)
             //throw error
             return res.status(error.statusCode).json(error)
@@ -103,12 +103,12 @@ export class productsController{
         console.log(newProduct.error)
 
         if(newProduct.error){
-            let error = customError.customError("Database unexpected error", newProduct.error.message, STATUS_CODES.ERROR_ARGUMENTOS, INTERNAL_CODES.DATABASE, "Database unexpected error, please, retry later")
+            let error = customError.customError("Database unexpected error", newProduct.error.message, STATUS_CODES.SERVER_ERROR, INTERNAL_CODES.DATABASE, "Database unexpected error, please, retry later")
             req.logger.error(error)
             return res.status(error.statusCode).json(error)
         } else {
             req.logger.info("Product created successfully")
-            return res.status(200).send('Product successfully created')
+            return res.status(201).send('Product successfully created')
         }
     } // End create
 

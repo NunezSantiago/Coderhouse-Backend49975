@@ -26,6 +26,11 @@ import MongoStore from 'connect-mongo';
 import { passportInit } from './config/config.passport.js';
 import passport from 'passport';
 
+//Swagger
+//import * as swaggerUi from 'swagger-ui-express'
+
+import {serve, setup} from 'swagger-ui-express'
+import { swagger_specs } from './config/config.js';
 
 const PORT = config.PORT
 const app = express()
@@ -53,8 +58,11 @@ app.use(sessions({
   })
 }))
 
-// Set routers
+//Swagger configuration
 
+app.use("/api-docs", serve, setup(swagger_specs))
+
+// Set routers
 app.use('/api/users', usersRouter)
 app.use('/api/products', productsRouter)
 app.use('/api/carts', cartsRouter)
@@ -63,10 +71,7 @@ app.use('/api/mocks', mocksRouter)
 app.use('/api/loggerTest', loggerTestRouter)
 app.use('/', viewsRouter)
 
-//app.use(errorHandler)
-
 // Passport configuration
-
 passportInit()
 app.use(passport.initialize())
 app.use(passport.session())
