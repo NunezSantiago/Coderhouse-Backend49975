@@ -1,0 +1,10 @@
+<h1>Password reset</h1>
+<br>
+{{#if error}}
+    <div style="color: red">{{error}}</div>
+{{/if}}
+
+<form action="/api/users/pwdReset01" method="post">
+    <input type="email" name="email" placeholder="Email">
+    <input type="submit" value="Reset password">
+</form>
