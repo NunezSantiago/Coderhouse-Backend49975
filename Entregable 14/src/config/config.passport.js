@@ -83,6 +83,8 @@ export const passportInit = () => {
 
             delete user.password
 
+            await usersService.updateUser(user._id, {last_connection: new Date()})
+
             return done(null, user)
 
         } catch (error) {

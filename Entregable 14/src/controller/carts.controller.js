@@ -72,7 +72,7 @@ export class cartsController{
         if(newCart.error){
             return res.status(500).json({error: newCart.error.message})
         } else{
-            res.status(201).json("Cart added successfully")
+            res.status(201).json({message: "Cart added successfully", cartID: newCart._id})
         }
     }
 
@@ -154,7 +154,7 @@ export class cartsController{
 
                 let cart = existCart.products
                 
-                let newCart = cart.filter( p => p.product != productId)
+                let newCart = cart.filter( p => p.product._id != productId)
 
                 if(newCart.length === cart.length){
                     // Product was not in cart

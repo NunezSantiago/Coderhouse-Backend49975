@@ -100,7 +100,7 @@ export class productsController{
 
         let newProduct = await productsService.createProduct(product)
 
-        console.log(newProduct.error)
+        //console.log(newProduct.error)
 
         if(newProduct.error){
             let error = customError.customError("Database unexpected error", newProduct.error.message, STATUS_CODES.SERVER_ERROR, INTERNAL_CODES.DATABASE, "Database unexpected error, please, retry later")
@@ -128,8 +128,8 @@ export class productsController{
             //return res.status(400).json({error: `Unable to find product with ID ${id}`})
         }
 
-        console.log(exist)
-        console.log(req.session.user)
+        // console.log(exist)
+        // console.log(req.session.user)
 
         if(req.session.user.role == "Premium" && exist.owner != req.session.user.email){
             let error = customError.customError("Cannot edit product", `Premium users can only edit products owned by them`, STATUS_CODES.ERROR_AUTORIZACION, INTERNAL_CODES.PERMISSIONS, `Cannot edit product with id ${id}`)
@@ -190,7 +190,7 @@ export class productsController{
                     return res.status(error.statusCode).json(error)
                 } else if(Object.keys(params).length === lengthAux){
                     req.logger.info("Product updated successfully")
-                    return res.status(200).send('Product successfully updated')
+                    return res.status(200).json({message: 'Product successfully updated'})
                 }
 
                 //console.log(updatedProduct)
@@ -265,7 +265,7 @@ export class productsController{
             return res.status(error.statusCode).json(error)
         } else{
             req.logger.info("Product deleted successfully")
-            return res.status(200).send('Product successfully deleted')
+            return res.status(200).json({message: 'Product successfully deleted'})
         }
     }
 

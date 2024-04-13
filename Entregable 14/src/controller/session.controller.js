@@ -11,6 +11,7 @@ export class sessionController{
     static async login(req, res){
 
         req.session.user = {
+            _id: req.user._id,
             first_name: req.user.first_name,
             last_name: req.user.last_name,
             email: req.user.email,
@@ -19,8 +20,6 @@ export class sessionController{
             cart: req.user.cart
         }
 
-        console.log(req.session.user)
-        
         return res.redirect('/products')
     }
 
@@ -46,9 +45,9 @@ export class sessionController{
 
         res.setHeader("Content-Type", "application/json");
 
-        let user = new userReadDTO(req.session.user)
-    
+        
         if(req.session.user){
+            let user = new userReadDTO(req.session.user)
             res.status(200).send(user)
         } else{
             res.status(404).json({error: `No active session available`})

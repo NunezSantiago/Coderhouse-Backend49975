@@ -28,5 +28,9 @@ router.get('/login', viewsController.login)
 router.get('/register', viewsController.register)
 router.get('/profile', auth, viewsController.profile)
 
+// Password reset
 router.get('/pwdReset', viewsController.pwdReset)
 router.get('/pwdReset02', viewsController.pwdUpdate)
+
+// File upload
+router.get('/upload', auth, viewsController.fileUpload)

@@ -27,6 +27,6 @@ export const config={
     MONGO_URL: process.env.MONGO_URL,
     DBNAME: process.env.DBNAME,
     SECRETKEY: process.env.SECRETKEY,
-    PERSISTENCE: process.argv[2],
+    PERSISTENCE: "mongo",
     MODE: process.env.MODE || "Development"
 }

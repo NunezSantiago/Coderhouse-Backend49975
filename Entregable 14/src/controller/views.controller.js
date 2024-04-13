@@ -100,8 +100,10 @@ export class viewsController{
         
         let user = req.session.user
 
+        let { message }  = req.query
+
         res.setHeader('Content-Type', 'text/html')
-        res.status(200).render('profile', {user})
+        res.status(200).render('profile', {user, message})
     }
 
     static async pwdReset(req, res){
@@ -117,5 +119,10 @@ export class viewsController{
 
         res.setHeader('Content-Type', 'text/html')
         res.status(200).render('pwdUpdate', {error, token})
+    }
+
+    static async fileUpload(req, res){
+        res.setHeader('Content-Type', 'text/html')
+        res.status(200).render('fileUpload', {uid: req.session.user._id})
     }
 }

@@ -23,4 +23,4 @@ router.post('/register', passport.authenticate('register', {failureRedirect:'/ap
 router.get('/logout', sessionController.logout)
 
 // Current
-router.get('/current', isUserLogged,sessionController.current)
+router.get('/current', sessionController.current)

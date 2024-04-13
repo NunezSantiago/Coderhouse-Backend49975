@@ -18,6 +18,13 @@ const usersSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'carts'
     },
+    last_connection: {
+        type: Date
+    },
+    documents: [{
+        name: String,
+        reference: String
+    }],
     isDeleted: {
         type: Boolean,
         default: false

@@ -8,8 +8,6 @@ import { sendEmail } from "../mails/mail.js"
 import { customError } from "../utils/customErrors.js"
 import { STATUS_CODES, INTERNAL_CODES } from "../utils/errorCodes.js";
 
-//usersService
-
 export class usersController {
     
     constructor(){}
@@ -25,20 +23,6 @@ export class usersController {
             return res.status(200).json(users)
         }
     }
-
-    // static async getUserByEmail(req, res){
-    //     res.setHeader("Content-Type", "application/json")
-
-    //     let { email } = req.params
-
-    //     let user = await usersService.getUserByEmail(email)
-
-    //     if(user){
-    //         return res.status(200).json(user)
-    //     } else {
-    //         return res.status(400).json({error: user.error.message})
-    //     }
-    // }
 
     static async createUser(req, res){
 
@@ -97,24 +81,44 @@ export class usersController {
 
         let params = {}
 
-        if(user.role == "User"){
-            params.role = "Premium"
-        }
+        let update_flag = true
 
         if(user.role == "Premium"){
             params.role = "User"
         }
 
-        let updateRole = usersService.updateUser(uid, params)
+        let documents = user.documents.map( (doc) => doc.name )
 
-        if(!updateRole.error){
-            req.logger.info("Role updated successfully")
-            return res.status(200).json("User role updated successfully")
-        } else{
-            let error = customError.customError("Database unexpected error", updateRole.error.message, STATUS_CODES.ERROR_ARGUMENTOS, INTERNAL_CODES.DATABASE, "Database unexpected error, please, retry later")
-            req.logger.error(error)
-            return res.status(error.statusCode).json(error)
+        let requiredFiles = ['identificacion', 'comprobante_domicilio', 'estado_de_cuenta']
+
+        for(let index of requiredFiles){
+            if(!documents.includes(index)){
+                update_flag = false
+                break
+            }
         }
+
+        if(update_flag){
+            
+            if(user.role == "User"){
+                params.role = "Premium"
+            }
+
+            let updateRole = await usersService.updateUser(uid, params)
+
+            if(!updateRole.error){
+                req.logger.info("Role updated successfully")
+                return res.status(200).json("User role updated successfully")
+            } else{
+                let error = customError.customError("Database unexpected error", updateRole.error.message, STATUS_CODES.ERROR_ARGUMENTOS, INTERNAL_CODES.DATABASE, "Database unexpected error, please, retry later")
+                req.logger.error(error)
+                return res.status(error.statusCode).json(error)
+            }
+        } else {
+            return res.status(401).json({Error: "Unauthorized. Please upload all required files to change your role to Premium"})
+        }
+
+        
     }
 
     static async pwdReset01(req, res){
@@ -130,20 +134,16 @@ export class usersController {
 
         let userDTO=new userReadDTO(user)
 
-        console.log(userDTO)
-
         let token = jwt.sign({...userDTO}, config.SECRETKEY, {expiresIn:"1h"})
 
         let message = `Hey ${user.first_name}, you can reset your password clicking this button: <a href="http://localhost:${config.PORT}/api/users/pwdReset02?token=${token}">Reset Password</a>`
 
         let response = await sendEmail(email, "Password reset request", message)
 
-        //return res.status(200).json(response)
-
         if(response.accepted.length > 0){
-            res.redirect('/login?message=Follow the instructions sent to your email to reset your password')
+            return res.redirect('/login?message=Follow the instructions sent to your email to reset your password')
         } else {
-            res.redirect('/login?error=Failed to reset passowrd. Please, try again later.')
+            return res.redirect('/login?error=Failed to reset passowrd. Please, try again later.')
         }
     }
 
@@ -152,10 +152,9 @@ export class usersController {
         let { token } = req.query
         try{
             let tokenData = jwt.verify(token, config.SECRETKEY)
-            res.redirect('/pwdReset02?token='+token)
-            //res.redirect
+            return res.redirect('/pwdReset02?token='+token)
         } catch(error) {
-            res.redirect('/pwdReset?error=Link has expired, please, create a new one completing the form')
+            return res.redirect('/pwdReset?error=Link has expired, please, create a new one completing the form')
         }
     }
 
@@ -166,18 +165,71 @@ export class usersController {
         let user = await usersService.getUserByEmail(tokenData.email)
 
         if(password != repeatPassword){
-            res.redirect(`/pwdReset02?token=${token}&error=Passwords do not match`)
+            return res.redirect(`/pwdReset02?token=${token}&error=Passwords do not match`)
         } else if(validatePassword(user, password)){
-            res.redirect(`/pwdReset02?token=${token}&error=New password cannot be the same as current password`)
+            return res.redirect(`/pwdReset02?token=${token}&error=New password cannot be the same as current password`)
         } else{
             password = createHash(password)
             let params = {password}
             let updatePassword = usersService.updateUser(user._id, params)
             if(!updatePassword.error){
-                res.redirect("/login?message=Password updated successfully")
+                return res.redirect("/login?message=Password updated successfully")
             } else{
-                res.redirect(`/pwdReset02?token=${token}&error=Failed to update password, please, try again later`)
+                return res.redirect(`/pwdReset02?token=${token}&error=Failed to update password, please, try again later`)
             }
         }
     }
+
+    static async fileUpload(req, res){
+        // documents.forEach((doc) => {
+        //     if(doc.name === "identificacion" || doc.name === "comprobante_domicilio" || doc.name === "estado_de_cuenta"){
+        //         old_files[doc.name] = doc.reference
+        //     }
+        // })
+
+        //let uid = req.params.uid
+        let user = await usersService.getUserByID(req.params.uid)
+        
+        if(user){
+            
+            let fileNames = Object.keys(req.files)
+            
+            let index = 
+            {
+                'identificacion': false, 
+                'comprobante_domicilio': false, 
+                'estado_de_cuenta': false
+            } // only files with this fieldname can be uploaded
+            
+            fileNames.forEach( (file) => {
+                index[file] = true
+            })
+
+            let documents = user.documents // Current user documents
+
+            documents.forEach( (doc) => {
+                if(index[doc.name]){
+                    doc.reference = req.files[doc.name][0].path
+                    index[doc.name] = false
+                }
+            })
+
+            for(let key in index){
+                if(index[key]){
+                    documents.push({
+                        name: req.files[key][0].fieldname,
+                        reference: req.files[key][0].path
+                    })
+                }
+            }
+
+            let updateUser = await usersService.updateUser(user._id, {documents})
+            
+            res.setHeader('Content-Type', 'text/html')
+            return res.redirect('/profile?message=Files uploaded successfully')
+        } else {
+            return res.status(404).json({error: "User not found"})
+        }
+    }
+
 }

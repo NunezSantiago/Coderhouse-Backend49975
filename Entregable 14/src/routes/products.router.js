@@ -3,13 +3,13 @@ import { productsController } from '../controller/products.controller.js';
 
 export const router = Router()
 
-// Middlewars
+// Middlewares
 
 const isAdmin = (req, res, next) => {
     if(!req.session.user){
-        return res.status(403).json("Please, login as an administrator or premium user")
+        return res.status(403).json({error: "Please, login as an administrator or premium user"})
     } else if(req.session.user.role != 'Admin' && req.session.user.role != 'Premium' ){
-        return res.status(403).json("Unauthorized. Your account does not have enough privileges to access this resource.")
+        return res.status(403).json({error: "Unauthorized. Your account does not have enough privileges to access this resource."})
     }
     next()
 }
